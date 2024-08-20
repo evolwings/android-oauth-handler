@@ -103,7 +103,9 @@ public abstract class OAuthBaseClient {
 
             @Override
             public void onFailure(Exception e) {
-                accessHandler.onLoginFailure(e);
+                if (accessHandler != null) {
+                    accessHandler.onLoginFailure(e);
+                }
             }
 
         });
