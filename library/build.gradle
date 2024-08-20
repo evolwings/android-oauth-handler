@@ -1,6 +1,4 @@
 apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
 ext {
 
@@ -50,76 +48,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
     }
-}
-
-afterEvaluate {
-    publishing {
-        publications {
-            // Creates a Maven publication called "release".
-            release(MavenPublication) {
-                // Applies the component for the release build variant.
-                from components.release
-
-                // You can then customize attributes of the publication as shown below.
-                groupId = GROUP
-                artifactId = POM_ARTIFACT_ID
-                version = VERSION_NAME
-
-                pom {
-                    name = POM_NAME
-                    url = POM_URL
-                    description = POM_DESCRIPTION
-                    licenses {
-                        license {
-                            name = POM_LICENCE_NAME
-                            url = POM_LICENCE_URL
-                        }
-                    }
-                    developers {
-                        developer {
-                            id = POM_DEVELOPER_ID
-                            name = POM_DEVELOPER_NAME
-                        }
-                    }
-                    scm {
-                        url = POM_SCM_URL
-                    }
-                }
-            }
-        }
-        repositories {
-            maven {
-                name = "Sonatype"
-                credentials {
-                    username = System.getenv('NEXUS_USERNAME')
-                    password = System.getenv('NEXUS_PASSWORD')
-                }
-                def releasesRepoUrl = 'https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/'
-                def snapshotsRepoUrl = 'https://s01.oss.sonatype.org/content/repositories/snapshots/'
-                url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
-                setUrl(url)
-            }
-        }
-    }
-}
-
-signing {
-    // gpg on MacOS is the same as gpg2
-    // ln -s /usr/local/bin/gpg /usr/local/bin/gpg2
-    // Make sure to populate the variables in gradle.properties
-    // signing.gnupg.keyName=XXX
-    // signing.gnupg.passpharse
-    useGpgCmd()
-    sign(publishing.publications)
-}
-
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    archiveClassifier.set("sources")
-}
-
-artifacts {
-    archives sourcesJar
 }
 
 ext {
